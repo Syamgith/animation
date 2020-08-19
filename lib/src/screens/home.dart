@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:animation/src/widgets/cat.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +11,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   Animation<double> catAnimation;
   AnimationController catController;
+  Animation<double> boxAnimation;
+  AnimationController boxController;
 
   @override
   void initState() {
@@ -22,6 +26,21 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         curve: Curves.easeIn,
       ),
     );
+    boxController = AnimationController(
+        duration: Duration(milliseconds: 300), vsync: this);
+    boxAnimation = Tween(begin: pi * 0.65, end: pi * 0.60).animate(
+      CurvedAnimation(parent: boxController, curve: Curves.linear),
+    );
+    boxAnimation.addStatusListener(
+      (status) {
+        if (status == AnimationStatus.completed) {
+          boxController.reverse();
+        } else if (status == AnimationStatus.dismissed) {
+          boxController.forward();
+        }
+      },
+    );
+    boxController.forward();
   }
 
   onTap() {
@@ -45,6 +64,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             children: [
               buildCatAnimation(),
               buildBox(),
+              buildLeftFlap(),
             ],
           ),
         ),
@@ -73,6 +93,28 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       color: Colors.brown,
       height: 200.0,
       width: 200.0,
+    );
+  }
+
+  Widget buildLeftFlap() {
+    return Positioned(
+      left: 6.0,
+      top: 3.0,
+      child: AnimatedBuilder(
+        animation: boxAnimation,
+        child: Container(
+          color: Colors.brown,
+          height: 10.0,
+          width: 125.0,
+        ),
+        builder: (context, child) {
+          return Transform.rotate(
+            alignment: Alignment.topLeft,
+            angle: boxAnimation.value,
+            child: child,
+          );
+        },
+      ),
     );
   }
 }
