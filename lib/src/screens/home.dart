@@ -1,3 +1,4 @@
+import 'package:animation/src/widgets/cat.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -8,6 +9,15 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Animation!'),
+      ),
+      body: buildAnimation(),
+    );
+  }
+
+  Widget buildAnimation() {
+    return Cat();
   }
 }
